@@ -118,14 +118,14 @@ async def on_message(message):
         except IndexError:
             await fetch_and_send_data(message.channel)  # 如果沒有指定日期，抓取當日數據
 
-@tasks.loop(hours=24)
-async def send_trading_data():
-    """每天定時發送三大法人買賣超數據"""
-    now = datetime.now()
-    if now.weekday() < 5 and now.hour == 13 and now.minute == 0:
-        for guild in client.guilds:
-            for channel in guild.text_channels:
-                await fetch_and_send_data(channel)
+# @tasks.loop(hours=24)
+# async def send_trading_data():
+#     """每天定時發送三大法人買賣超數據"""
+#     now = datetime.now()
+#     if now.weekday() < 5 and now.hour == 13 and now.minute == 0:
+#         for guild in client.guilds:
+#             for channel in guild.text_channels:
+#                 await fetch_and_send_data(channel)
 
 client.run(TOKEN)
 
