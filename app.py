@@ -35,12 +35,6 @@ def find_previous_working_day(date: datetime) -> str:
         prev_day -= timedelta(days=1)
     return prev_day.strftime('%Y%m%d')
 
-def save_to_db(df: pd.DataFrame):
-    """將數據保存到 SQLite 資料庫"""
-    conn = sqlite3.connect('D:/trading_data.db')
-    df.to_sql('institutional_data', conn, if_exists='append', index=False)
-    conn.close()
-
 
 def format_value(value):
     """格式化數據為簡潔表示法，以10^8為單位"""
@@ -99,7 +93,6 @@ async def fetch_and_send_data(channel, date=None):
 async def on_ready():
     """當機器人完成啟動時執行"""
     print(f"目前登入身份 --> {client.user}")
-    send_trading_data.start()
 
 # 當機器人收到消息時觸發
 @client.event
