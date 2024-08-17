@@ -35,6 +35,12 @@ def find_previous_working_day(date: datetime) -> str:
         prev_day -= timedelta(days=1)
     return prev_day.strftime('%Y%m%d')
 
+def save_to_db(df: pd.DataFrame):
+    """將數據保存到 SQLite 資料庫"""
+    conn = sqlite3.connect('D:/trading_data.db')
+    df.to_sql('institutional_data', conn, if_exists='append', index=False)
+    conn.close()
+
 
 def format_value(value):
     """格式化數據為簡潔表示法，以10^8為單位"""
@@ -93,6 +99,7 @@ async def fetch_and_send_data(channel, date=None):
 async def on_ready():
     """當機器人完成啟動時執行"""
     print(f"目前登入身份 --> {client.user}")
+    send_trading_data.start()
 
 # 當機器人收到消息時觸發
 @client.event
@@ -111,15 +118,18 @@ async def on_message(message):
         except IndexError:
             await fetch_and_send_data(message.channel)  # 如果沒有指定日期，抓取當日數據
 
-# @tasks.loop(hours=24)
-# async def send_trading_data():
-#     """每天定時發送三大法人買賣超數據"""
-#     now = datetime.now()
-#     if now.weekday() < 5 and now.hour == 13 and now.minute == 0:
-#         for guild in client.guilds:
-#             for channel in guild.text_channels:
-#                 await fetch_and_send_data(channel)
-
+@tasks.loop(hours=24)
+async def send_trading_data():
+    """每天定時發送三大法人買賣超數據"""
+    now = datetime.now()
+    if now.weekday() < 5 and now.hour == 15 and now.minute == 1:
+        target_channel_id = 1161265766948151336  # 替換為你目標頻道的 ID
+        channel = client.get_channel(target_channel_id)
+        
+        if channel:
+            await fetch_and_send_data(channel)
+        else:
+            print(f"找不到頻道 ID {target_channel_id}")
 client.run(TOKEN)
 
 
