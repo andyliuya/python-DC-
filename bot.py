@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import sqlite3
 
 # 輸入你的機器人Token
-TOKEN =  'MTI3NDE5NzY3MjE3NzQzODc0Mg.GNTH2q.RX4kye0KSDUTI-2Ybstr_RR0MfPOxMtGZy7Qg4'
+TOKEN =  
 
 intents = discord.Intents.default()
 intents.message_content = True
